@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+
+if [ -n "$DOCKER" ]; then
+  # give postgres time to start
+  sleep 2
+  exit 0;
+fi
+
+echo ""
+echo "Starting database container... $SERVICE"
+docker-compose up -d $SERVICE
+
+echo ""
+echo "Waiting for database service..."
+
+delay=1
+container_up=0
+while [ $container_up -eq 0 ]; do
+  container_up=$(docker-compose ps $SERVICE --status running 2>&1 | grep -v 'no such service' | wc -l)
+  sleep $delay
+done
+
+echo "  ...container is up"
+
+echo ""
+echo "Waiting for database service..."
+
+timeout=30
+elapsed=0
+database_down=1
+while [ $database_down -ne 0 ]; do
+  if [ $elapsed -ge $timeout ]; then
+    echo "Error: Database did not become ready in $timeout seconds."
+    exit 1
+  fi
+
+  echo " ...waiting"
+  docker-compose exec $SERVICE pg_isready --quiet --host=$SERVICE --port=5432
+  database_down=$?
+  sleep $delay
+  elapsed=$((elapsed + delay))
+done
+
+echo "  ...service is answering requests"
+
+
+

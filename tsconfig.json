@@ -1,0 +1,31 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compileOnSave": false,
+  "files": [],
+  "references": [
+    {
+      "path": "./apps/api"
+    },
+    {
+      "path": "./apps/inventory"
+    },
+    {
+      "path": "./libs/api/products"
+    },
+    {
+      "path": "./libs/api/stores"
+    },
+    {
+      "path": "./libs/shared/models"
+    },
+    {
+      "path": "./libs/ui"
+    },
+    {
+      "path": "./libs/api/db"
+    },
+    {
+      "path": "./libs/api/config"
+    }
+  ]
+}

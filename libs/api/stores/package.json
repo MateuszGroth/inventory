@@ -1,0 +1,46 @@
+{
+  "name": "@org/api-stores",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "@org/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "nx": {
+    "tags": [
+      "scope:api"
+    ],
+    "targets": {
+      "build": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "tsc --build",
+          "cwd": "libs/api/stores"
+        },
+        "inputs": [
+          "default"
+        ],
+        "dependsOn": [
+          "^build"
+        ]
+      }
+    }
+  },
+  "dependencies": {
+    "tslib": "^2.3.0",
+    "express": "^4.21.2",
+    "zod": "^4.3.6",
+    "@org/db": "workspace:*"
+  },
+  "devDependencies": {
+    "@org/models": "workspace:*"
+  }
+}

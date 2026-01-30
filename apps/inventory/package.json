@@ -1,0 +1,39 @@
+{
+  "name": "@org/inventory",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "projectType": "application",
+    "tags": [
+      "scope:inventory"
+    ],
+    "targets": {
+      "serve": {
+        "dependsOn": [
+          "@org/api:serve"
+        ]
+      },
+      "dev": {
+        "dependsOn": [
+          "@org/api:serve"
+        ]
+      },
+      "preview": {
+        "dependsOn": [
+          "build",
+          "@org/api:serve"
+        ]
+      }
+    }
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^7.3.7",
+    "@mui/material": "^7.3.7",
+    "@org/models": "workspace:*",
+    "@org/ui": "workspace:*",
+    "@tanstack/react-query": "^5.90.20",
+    "zod": "^4.3.6"
+  }
+}

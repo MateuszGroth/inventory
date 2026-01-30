@@ -1,0 +1,8 @@
+packages:
+  - "apps/*"
+  - "libs/api/products"
+  - "libs/api/stores"
+  - "libs/api/db"
+  - "libs/api/config"
+  - "libs/shared/*"
+  - "libs/ui"

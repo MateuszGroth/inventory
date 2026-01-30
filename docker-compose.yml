@@ -1,0 +1,49 @@
+x-common-build-config: &common-build-config
+  context: .
+  args:
+    - NODE_VERSION=24.13.0
+
+services:
+  dev:
+    image: org/inventory-dev
+    build:
+      <<: *common-build-config
+      target: dev
+    depends_on:
+      - postgres
+    ports:
+      - 9229:9229
+      # Port for local development
+      - 4200:4200
+      - 4002:4002
+      # Port for prisma studio
+      - 4003:5555
+    volumes:
+      - node_modules:/app/node_modules
+      - .:/app
+    environment:
+      DOCKER: 1
+      NODE_ENV: development
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: inventory
+      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/inventory?schema=public"
+      HOST: "0.0.0.0"
+      NX_DAEMON: true
+    command: npx nx dev inventory
+
+  postgres:
+    image: postgres:14.17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: inventory
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - 5435:5432
+
+volumes:
+  db-data:
+  node_modules:
+  # nx-cache:

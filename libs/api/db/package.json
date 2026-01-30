@@ -1,0 +1,111 @@
+{
+  "name": "@org/db",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "seed": "prisma db seed",
+    "migrate:dev": "prisma migrate dev",
+    "migrate:deploy": "prisma migrate deploy",
+    "migrate:reset": "prisma migrate reset"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "@org/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "nx": {
+    "tags": [
+      "scope:api"
+    ],
+    "targets": {
+      "seed": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "pnpm seed",
+          "cwd": "libs/api/db"
+        }
+      },
+      "db:wait": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "SERVICE=postgres ./bin/wait_for_db",
+          "cwd": "."
+        }
+      },
+      "db:dev:up": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "pnpm migrate:deploy && pnpm seed",
+          "cwd": "libs/api/db"
+        },
+        "dependsOn": [
+          "db:wait"
+        ]
+      },
+      "migrate:deploy": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "pnpm migrate:deploy",
+          "cwd": "libs/api/db"
+        }
+      },
+      "migrate:reset": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "pnpm migrate:reset",
+          "cwd": "libs/api/db"
+        }
+      },
+      "migrate:dev": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "pnpm migrate:dev",
+          "cwd": "libs/api/db"
+        }
+      },
+      "build": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "tsc --build",
+          "cwd": "libs/api/db"
+        },
+        "inputs": [
+          "default"
+        ],
+        "dependsOn": [
+          "prisma:generate"
+        ]
+      },
+      "prisma:generate": {
+        "cache": true,
+        "inputs": [
+          "{projectRoot}/prisma/schema.prisma"
+        ],
+        "outputs": [
+          "{projectRoot}/prisma/generated"
+        ],
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "prisma generate",
+          "cwd": "libs/api/db"
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.3.0",
+    "@org/api-config": "workspace:*",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "prisma": "^7.3.0",
+    "tsx": "^4.21.0"
+  }
+}
